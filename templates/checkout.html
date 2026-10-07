@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h1>Checkout</h1>
+<div class="panel">
+  <strong>Order summary</strong>
+  {% for l in lines %}
+  <div class="line-item">
+    <span>{{ l.qty }} &times; {{ l.product.name }}</span>
+    <span>{{ l.subtotal | money }}</span>
+  </div>
+  {% endfor %}
+  <div class="total"><span>Total</span><span>{{ total | money }}</span></div>
+</div>
+
+<form class="panel" method="post" action="/checkout">
+  <strong>Shipping details</strong>
+  <p class="sub" style="margin:4px 0 0">Confirmation will be emailed to {{ user.email }}.</p>
+  <label for="full_name">Full name</label>
+  <input id="full_name" name="full_name" required value="{{ user.name }}">
+  <label for="phone">Phone</label>
+  <input id="phone" name="phone">
+  <label for="address">Address</label>
+  <textarea id="address" name="address" rows="3" required></textarea>
+  <label for="city">City</label>
+  <input id="city" name="city" required>
+  <p><button class="btn" type="submit">Place order ({{ total | money }})</button></p>
+</form>
+{% endblock %}

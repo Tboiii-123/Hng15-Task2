@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Bootcamp Shop{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container">
+      <a class="logo" href="/">Bootcamp Shop</a>
+      <nav class="nav-links">
+        <a href="/">Shop</a>
+        <a href="/cart">Cart ({{ cart_count }})</a>
+        {% if user %}
+          <a href="/orders">My orders</a>
+          <span>{% if user.picture %}<img class="avatar" src="{{ user.picture }}" alt="" referrerpolicy="no-referrer">{% endif %}{{ user.name or user.email }}</span>
+          <a href="/logout">Log out</a>
+        {% else %}
+          <a class="btn small" href="/login">Sign in</a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
