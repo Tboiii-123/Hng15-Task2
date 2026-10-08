@@ -2,7 +2,7 @@ import logging
 
 from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi import BackgroundTasks, Depends, FastAPI, Form, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -73,6 +73,32 @@ def render(request: Request, db: Session, name: str, **ctx):
         name,
         {"user": current_user(request, db), "cart_count": cart_count, **ctx},
     )
+
+
+# ---------- PWA ----------
+
+@app.get("/sw.js", include_in_schema=False)
+def service_worker():
+    # Must be served from the site root so it can control every page.
+    return FileResponse(
+        "static/sw.js",
+        media_type="application/javascript",
+        headers={"Service-Worker-Allowed": "/", "Cache-Control": "no-cache"},
+    )
+
+
+@app.get("/manifest.webmanifest", include_in_schema=False)
+def web_manifest():
+    return FileResponse(
+        "static/manifest.webmanifest",
+        media_type="application/manifest+json",
+        headers={"Cache-Control": "no-cache"},
+    )
+
+
+@app.get("/offline", include_in_schema=False)
+def offline_page(request: Request, db: Session = Depends(get_db)):
+    return render(request, db, "offline.html")
 
 
 # ---------- shop ----------

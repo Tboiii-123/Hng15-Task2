@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Bootcamp Shop{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Bootcamp Shop">
+  <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 </head>
 <body>
   <header class="nav">
@@ -26,5 +34,14 @@
   <main class="container">
     {% block content %}{% endblock %}
   </main>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function (e) {
+          console.warn("Service worker registration failed", e);
+        });
+      });
+    }
+  </script>
 </body>
 </html>
