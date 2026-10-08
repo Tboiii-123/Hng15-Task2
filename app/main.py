@@ -2,7 +2,7 @@ import logging
 
 from authlib.integrations.starlette_client import OAuth, OAuthError
 from fastapi import BackgroundTasks, Depends, FastAPI, Form, Request
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -93,6 +93,26 @@ def web_manifest():
         "static/manifest.webmanifest",
         media_type="application/manifest+json",
         headers={"Cache-Control": "no-cache"},
+    )
+
+
+@app.get("/.well-known/assetlinks.json", include_in_schema=False)
+def asset_links():
+    # Proves the Android app (Trusted Web Activity) belongs to this site,
+    # which removes the Chrome address bar inside the APK.
+    return JSONResponse(
+        [
+            {
+                "relation": ["delegate_permission/common.handle_all_urls"],
+                "target": {
+                    "namespace": "android_app",
+                    "package_name": "com.Tboiii.bootcampshop",
+                    "sha256_cert_fingerprints": [
+                        "C5:D7:6B:D3:28:E9:CE:85:F3:D5:3C:EB:79:9F:1E:79:9D:B2:FD:43:88:33:14:B8:E7:BE:61:4F:42:CE:EC:50"
+                    ],
+                },
+            }
+        ]
     )
 
 
